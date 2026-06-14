@@ -103,7 +103,7 @@ export default function NewHabitPage() {
         </button>
       </div>
 
-      {/* Priority Palette */}
+      {/* Priority Palette — pure color blocks */}
       <div className="mb-6">
         <Label className="mb-3 block">优先级</Label>
         <div className="grid grid-cols-4 gap-3">
@@ -115,23 +115,15 @@ export default function NewHabitPage() {
                 key={p}
                 type="button"
                 onClick={() => setPriority(p)}
-                className="group relative aspect-square rounded-xl border-2 transition-all duration-200 hover:shadow-md flex items-center justify-center overflow-hidden"
+                className="aspect-square rounded-xl transition-all duration-200"
                 style={{
-                  backgroundColor: cfg.softBg,
-                  borderColor: selected ? cfg.color : 'transparent',
+                  backgroundColor: selected ? cfg.selectedBg : cfg.softBg,
+                  transform: selected ? 'scale(1.05)' : 'scale(1)',
                   boxShadow: selected
-                    ? `0 0 0 1px ${cfg.color}, 0 4px 12px ${cfg.color}22`
+                    ? `0 0 0 2px ${cfg.selectedBg}, 0 4px 16px ${cfg.selectedBg}44`
                     : undefined,
                 }}
-              >
-                {/* Hover hint */}
-                <span
-                  className="absolute inset-0 flex items-center justify-center text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ color: cfg.color }}
-                >
-                  {cfg.hint}
-                </span>
-              </button>
+              />
             )
           })}
         </div>

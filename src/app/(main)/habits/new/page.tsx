@@ -103,10 +103,10 @@ export default function NewHabitPage() {
         </button>
       </div>
 
-      {/* Priority Selector */}
+      {/* Priority Palette */}
       <div className="mb-6">
-        <Label className="mb-2 block">优先级</Label>
-        <div className="grid grid-cols-4 gap-2">
+        <Label className="mb-3 block">优先级</Label>
+        <div className="grid grid-cols-4 gap-3">
           {PRIORITY_ORDER.map((p) => {
             const cfg = PRIORITY_CONFIG[p]
             const selected = priority === p
@@ -115,20 +115,22 @@ export default function NewHabitPage() {
                 key={p}
                 type="button"
                 onClick={() => setPriority(p)}
-                className={`py-2 rounded-lg text-sm font-medium border-2 transition-all ${
-                  selected
-                    ? 'border-current shadow-sm'
-                    : 'border-transparent bg-muted hover:bg-muted'
-                }`}
+                className="group relative aspect-square rounded-xl border-2 transition-all duration-200 hover:shadow-md flex items-center justify-center overflow-hidden"
                 style={{
-                  color: selected ? cfg.color : undefined,
-                  borderColor: selected ? cfg.color : undefined,
+                  backgroundColor: cfg.softBg,
+                  borderColor: selected ? cfg.color : 'transparent',
+                  boxShadow: selected
+                    ? `0 0 0 1px ${cfg.color}, 0 4px 12px ${cfg.color}22`
+                    : undefined,
                 }}
               >
-                <div className="text-xs opacity-70">{cfg.short}</div>
-                <div className="text-[10px] mt-0.5 opacity-60 truncate px-0.5">
-                  {p === 'P0' ? '重要紧急' : p === 'P1' ? '重要不紧急' : p === 'P2' ? '紧急不重要' : '不重要不紧急'}
-                </div>
+                {/* Hover hint */}
+                <span
+                  className="absolute inset-0 flex items-center justify-center text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ color: cfg.color }}
+                >
+                  {cfg.hint}
+                </span>
               </button>
             )
           })}

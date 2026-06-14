@@ -23,6 +23,8 @@ model Habit {
   userId       String
   name         String
   description  String
+  type         String   @default("HABIT")
+  status       String   @default("ACTIVE")
   frequency    String   @default("DAILY")
   startDate    String
   reminderTime String

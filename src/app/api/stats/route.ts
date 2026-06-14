@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { calcStreak } from '@/lib/streak'
 
 export async function GET() {
   const session = await auth()
@@ -69,55 +70,14 @@ export async function GET() {
       ? Math.round((totalLogs30Days / totalExpected30Days) * 100)
       : 0
 
-  // Current streak
-  const dates = [...new Set(allLogs.map((l) => l.completedDate))].sort().reverse()
-  let currentStreak = 0
-  if (dates.length > 0) {
-    currentStreak = 1
-    for (let i = 1; i < dates.length; i++) {
-      const prev = new Date(dates[i - 1])
-      const curr = new Date(dates[i])
-      const diff = (prev.getTime() - curr.getTime()) / 86400000
-      if (Math.round(diff) === 1) {
-        currentStreak++
-      } else {
-        break
-      }
-    }
-    const todayStr = today.toISOString().split('T')[0]
-    if (dates[0] !== todayStr && dates[0] !== yesterdayDate(todayStr)) {
-      currentStreak = 0
-    }
-  }
-
-  // Longest streak
-  let longestStreak = dates.length > 0 ? 1 : 0
-  let tempStreak = 1
-  const sortedAsc = [...new Set(allLogs.map((l) => l.completedDate))].sort()
-  for (let i = 1; i < sortedAsc.length; i++) {
-    const prev = new Date(sortedAsc[i - 1])
-    const curr = new Date(sortedAsc[i])
-    const diff = (curr.getTime() - prev.getTime()) / 86400000
-    if (Math.round(diff) === 1) {
-      tempStreak++
-      longestStreak = Math.max(longestStreak, tempStreak)
-    } else {
-      tempStreak = 1
-    }
-  }
+  const streak = calcStreak(allLogs.map((l) => l.completedDate))
 
   return NextResponse.json({
     totalCheckins,
-    currentStreak,
-    longestStreak,
+    currentStreak: streak.current,
+    longestStreak: streak.longest,
     weekRate,
     monthRate,
     heatmap,
   })
-}
-
-function yesterdayDate(today: string) {
-  const d = new Date(today)
-  d.setDate(d.getDate() - 1)
-  return d.toISOString().split('T')[0]
 }

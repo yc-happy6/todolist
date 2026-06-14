@@ -25,6 +25,7 @@ model Habit {
   description  String
   type         String   @default("HABIT")
   status       String   @default("ACTIVE")
+  priority     String   @default("P2")
   frequency    String   @default("DAILY")
   startDate    String
   reminderTime String

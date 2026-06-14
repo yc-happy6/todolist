@@ -14,11 +14,13 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from 'sonner'
+import { PRIORITY_CONFIG, PRIORITY_ORDER, type Priority } from '@/lib/priority'
 
 export default function NewHabitPage() {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [type, setType] = useState<'HABIT' | 'TASK'>('HABIT')
+  const [priority, setPriority] = useState<Priority>('P2')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -27,6 +29,7 @@ export default function NewHabitPage() {
     const formData = new FormData(e.currentTarget)
     const body: Record<string, string> = {
       type,
+      priority,
       name: formData.get('name') as string,
       description: formData.get('description') as string,
     }
@@ -75,7 +78,7 @@ export default function NewHabitPage() {
       </p>
 
       {/* Type Selector */}
-      <div className="flex bg-stone-100 rounded-lg p-1 mb-8">
+      <div className="flex bg-stone-100 rounded-lg p-1 mb-6">
         <button
           type="button"
           onClick={() => setType('HABIT')}
@@ -98,6 +101,38 @@ export default function NewHabitPage() {
         >
           任务
         </button>
+      </div>
+
+      {/* Priority Selector */}
+      <div className="mb-6">
+        <Label className="mb-2 block">优先级</Label>
+        <div className="grid grid-cols-4 gap-2">
+          {PRIORITY_ORDER.map((p) => {
+            const cfg = PRIORITY_CONFIG[p]
+            const selected = priority === p
+            return (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPriority(p)}
+                className={`py-2 rounded-lg text-sm font-medium border-2 transition-all ${
+                  selected
+                    ? 'border-current shadow-sm'
+                    : 'border-transparent bg-stone-50 hover:bg-stone-100'
+                }`}
+                style={{
+                  color: selected ? cfg.color : undefined,
+                  borderColor: selected ? cfg.color : undefined,
+                }}
+              >
+                <div className="text-xs opacity-70">{cfg.short}</div>
+                <div className="text-[10px] mt-0.5 opacity-60 truncate px-0.5">
+                  {p === 'P0' ? '重要紧急' : p === 'P1' ? '重要不紧急' : p === 'P2' ? '紧急不重要' : '不重要不紧急'}
+                </div>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <Card>

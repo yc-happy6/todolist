@@ -831,6 +831,7 @@ export const HabitScalarFieldEnum = {
   description: 'description',
   type: 'type',
   status: 'status',
+  priority: 'priority',
   frequency: 'frequency',
   startDate: 'startDate',
   reminderTime: 'reminderTime',

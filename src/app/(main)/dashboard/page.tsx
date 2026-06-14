@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog'
 import { CelebrationModal } from '@/components/celebration-modal'
 import { toast } from 'sonner'
+import { priorityLabel, priorityBarColor, priorityColor } from '@/lib/priority'
 
 interface HabitData {
   id: string
@@ -23,6 +24,7 @@ interface HabitData {
   description: string
   type: string
   status: string
+  priority: string
   frequency: string
   currentStreak: number
   longestStreak: number
@@ -114,6 +116,94 @@ export default function DashboardPage() {
     return f
   }
 
+  const renderCard = (item: HabitData) => {
+    const isTask = item.type === 'TASK'
+    const isCompleted = item.status === 'COMPLETED'
+    const barColor = priorityBarColor(item.priority)
+    const pColor = priorityColor(item.priority)
+    const pLabel = priorityLabel(item.priority)
+
+    return (
+      <div
+        key={item.id}
+        className={`flex rounded-xl border border-stone-200 bg-white hover:shadow-sm transition-shadow group/card overflow-hidden ${
+          isCompleted ? 'opacity-70' : ''
+        }`}
+      >
+        {/* Priority color bar - 4px left indicator */}
+        <div className={`w-1 shrink-0 ${barColor}`} />
+
+        <div className="flex-1 p-5 min-w-0">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Link
+                  href={`/habits/${item.id}`}
+                  className={`font-semibold text-stone-900 hover:text-black truncate ${
+                    isCompleted ? 'line-through text-stone-400' : ''
+                  }`}
+                >
+                  {item.name}
+                </Link>
+                {/* Priority tiny tag */}
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded border"
+                  style={{ color: pColor, borderColor: pColor, opacity: 0.8 }}
+                >
+                  {pLabel}
+                </span>
+                <Badge variant="secondary" className="text-xs">
+                  {isTask ? '任务' : frequencyLabel(item.frequency)}
+                </Badge>
+                {isCompleted && (
+                  <span className="text-emerald-500 text-sm">✅</span>
+                )}
+              </div>
+              {item.description && (
+                <p className="text-sm text-stone-500 truncate">
+                  {item.description}
+                </p>
+              )}
+              {!isTask && (
+                <div className="flex items-center gap-4 text-sm text-stone-500 mt-1.5">
+                  <span>🔥 连续 {item.currentStreak} 天</span>
+                  <span>📊 {item.completionRate}%</span>
+                  <span>✅ {item.totalCheckins} 次</span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 ml-4 shrink-0">
+              <Button
+                onClick={() => handleCheckin(item.id)}
+                disabled={isCompleted || (!isTask && item.checkedInToday)}
+                variant={isCompleted || (!isTask && item.checkedInToday) ? 'ghost' : 'default'}
+                size="sm"
+              >
+                {isCompleted
+                  ? '已完成'
+                  : isTask
+                    ? '完成'
+                    : item.checkedInToday
+                      ? '已完成'
+                      : '打卡'}
+              </Button>
+              <Button
+                onClick={() => setDeleteTarget(item)}
+                variant="ghost"
+                size="icon"
+                className="size-8 text-stone-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <WelcomeBanner />
@@ -135,122 +225,20 @@ export default function DashboardPage() {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Tasks Section */}
           {tasks.length > 0 && (
             <div>
               <h2 className="text-sm font-medium text-stone-500 mb-3">任务</h2>
               <div className="space-y-3">
-                {tasks.map((task) => (
-                  <Card
-                    key={task.id}
-                    className={`hover:shadow-sm transition-shadow group/card ${
-                      task.status === 'COMPLETED' ? 'opacity-70' : ''
-                    }`}
-                  >
-                    <CardContent className="p-5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Link
-                              href={`/habits/${task.id}`}
-                              className={`font-semibold text-stone-900 hover:text-black truncate ${
-                                task.status === 'COMPLETED' ? 'line-through text-stone-400' : ''
-                              }`}
-                            >
-                              {task.name}
-                            </Link>
-                            <Badge variant="secondary" className="text-xs">
-                              任务
-                            </Badge>
-                            {task.status === 'COMPLETED' && (
-                              <span className="text-emerald-500 text-sm">✅</span>
-                            )}
-                          </div>
-                          {task.description && (
-                            <p className="text-sm text-stone-500 truncate">
-                              {task.description}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1.5 ml-4 shrink-0">
-                          <Button
-                            onClick={() => handleCheckin(task.id)}
-                            disabled={task.status === 'COMPLETED'}
-                            variant={task.status === 'COMPLETED' ? 'ghost' : 'default'}
-                            size="sm"
-                          >
-                            {task.status === 'COMPLETED' ? '已完成' : '完成'}
-                          </Button>
-                          <Button
-                            onClick={() => setDeleteTarget(task)}
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-stone-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
-                            </svg>
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {tasks.map(renderCard)}
               </div>
             </div>
           )}
 
-          {/* Habits Section */}
           {habitsOnly.length > 0 && (
             <div>
               <h2 className="text-sm font-medium text-stone-500 mb-3">习惯</h2>
               <div className="space-y-3">
-                {habitsOnly.map((habit) => (
-                  <Card key={habit.id} className="hover:shadow-sm transition-shadow group/card">
-                    <CardContent className="p-5">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Link
-                              href={`/habits/${habit.id}`}
-                              className="font-semibold text-stone-900 hover:text-black truncate"
-                            >
-                              {habit.name}
-                            </Link>
-                            <Badge variant="secondary" className="text-xs">
-                              {frequencyLabel(habit.frequency)}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-stone-500">
-                            <span>🔥 连续 {habit.currentStreak} 天</span>
-                            <span>📊 {habit.completionRate}%</span>
-                            <span>✅ {habit.totalCheckins} 次</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 ml-4 shrink-0">
-                          <Button
-                            onClick={() => handleCheckin(habit.id)}
-                            disabled={habit.checkedInToday}
-                            variant={habit.checkedInToday ? 'ghost' : 'default'}
-                            size="sm"
-                          >
-                            {habit.checkedInToday ? '已完成' : '打卡'}
-                          </Button>
-                          <Button
-                            onClick={() => setDeleteTarget(habit)}
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-stone-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
-                            </svg>
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {habitsOnly.map(renderCard)}
               </div>
             </div>
           )}
@@ -279,7 +267,6 @@ export default function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Celebration Modal */}
       <CelebrationModal
         open={showCelebration}
         onOpenChange={setShowCelebration}

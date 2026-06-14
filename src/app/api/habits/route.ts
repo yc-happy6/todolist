@@ -36,6 +36,7 @@ export async function GET() {
           description: habit.description,
           type: habit.type,
           status: habit.status,
+          priority: habit.priority,
           frequency: habit.frequency,
           startDate: habit.startDate,
           reminderTime: habit.reminderTime,
@@ -66,6 +67,7 @@ export async function GET() {
         description: habit.description,
         type: habit.type,
         status: habit.status,
+        priority: habit.priority,
         frequency: habit.frequency,
         startDate: habit.startDate,
         reminderTime: habit.reminderTime,
@@ -88,7 +90,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { name, description, type, frequency, startDate, reminderTime } = body
+  const { name, description, type, priority, frequency, startDate, reminderTime } = body
   const habitType = type || 'HABIT'
 
   if (!name) {
@@ -105,6 +107,7 @@ export async function POST(request: NextRequest) {
       name,
       description: description || '',
       type: habitType,
+      priority: priority || 'P2',
       frequency: habitType === 'TASK' ? 'ONCE' : (frequency || 'DAILY'),
       startDate: startDate || new Date().toISOString().split('T')[0],
       reminderTime: reminderTime || '',

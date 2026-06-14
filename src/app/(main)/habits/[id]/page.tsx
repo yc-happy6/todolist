@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { CelebrationModal } from '@/components/celebration-modal'
 import { toast } from 'sonner'
+import { priorityColor, priorityBarColor, priorityLabel } from '@/lib/priority'
 
 interface HabitDetail {
   id: string
@@ -24,6 +25,7 @@ interface HabitDetail {
   description: string
   type: string
   status: string
+  priority: string
   frequency: string
   startDate: string
   reminderTime: string
@@ -134,110 +136,124 @@ export default function HabitDetailPage() {
 
   const isTask = habit.type === 'TASK'
   const isCompleted = habit.status === 'COMPLETED'
+  const pColor = priorityColor(habit.priority)
+  const pLabel = priorityLabel(habit.priority)
+  const barColor = priorityBarColor(habit.priority)
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <CardTitle className={`text-xl ${isCompleted ? 'line-through text-stone-400' : ''}`}>
-                {habit.name}
-              </CardTitle>
-              <Badge variant={isTask ? 'secondary' : 'secondary'}>
-                {isTask ? '任务' : frequencyLabel(habit.frequency)}
-              </Badge>
-              {isCompleted && (
-                <span className="text-emerald-500 text-lg">✅</span>
+      <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden">
+        <div className={`w-1 shrink-0 ${barColor}`} />
+        <div className="flex-1">
+          <Card className="border-0 shadow-none">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CardTitle className={`text-xl ${isCompleted ? 'line-through text-stone-400' : ''}`}>
+                    {habit.name}
+                  </CardTitle>
+                  <span
+                    className="text-[10px] font-semibold px-1.5 py-0.5 rounded border"
+                    style={{ color: pColor, borderColor: pColor, opacity: 0.8 }}
+                  >
+                    {pLabel}
+                  </span>
+                  <Badge variant="secondary">
+                    {isTask ? '任务' : frequencyLabel(habit.frequency)}
+                  </Badge>
+                  {isCompleted && (
+                    <span className="text-emerald-500 text-lg">✅</span>
+                  )}
+                </div>
+                <Button
+                  onClick={() => {
+                    setEditName(habit.name)
+                    setEditDesc(habit.description)
+                    setEditReminder(habit.reminderTime)
+                    setEditOpen(true)
+                  }}
+                  variant="ghost"
+                  size="sm"
+                >
+                  编辑
+                </Button>
+              </div>
+              {habit.description && (
+                <p className="text-stone-500 text-sm mt-1">{habit.description}</p>
               )}
-            </div>
-            <Button
-              onClick={() => {
-                setEditName(habit.name)
-                setEditDesc(habit.description)
-                setEditReminder(habit.reminderTime)
-                setEditOpen(true)
-              }}
-              variant="ghost"
-              size="sm"
-            >
-              编辑
-            </Button>
-          </div>
-          {habit.description && (
-            <p className="text-stone-500 text-sm mt-1">{habit.description}</p>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {isTask ? (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {isCompleted ? '已完成' : '进行中'}
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {isTask ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {isCompleted ? '已完成' : '进行中'}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">状态</div>
+                  </div>
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {habit.totalCheckins}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">完成次数</div>
+                  </div>
                 </div>
-                <div className="text-xs text-stone-500 mt-1">状态</div>
-              </div>
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {habit.totalCheckins}
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {habit.currentStreak}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">当前连续</div>
+                  </div>
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {habit.longestStreak}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">历史最长</div>
+                  </div>
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {habit.totalCheckins}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">总打卡次数</div>
+                  </div>
+                  <div className="bg-stone-50 rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-stone-900">
+                      {habit.startDate}
+                    </div>
+                    <div className="text-xs text-stone-500 mt-1">开始日期</div>
+                  </div>
                 </div>
-                <div className="text-xs text-stone-500 mt-1">完成次数</div>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {habit.currentStreak}
-                </div>
-                <div className="text-xs text-stone-500 mt-1">当前连续</div>
-              </div>
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {habit.longestStreak}
-                </div>
-                <div className="text-xs text-stone-500 mt-1">历史最长</div>
-              </div>
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {habit.totalCheckins}
-                </div>
-                <div className="text-xs text-stone-500 mt-1">总打卡次数</div>
-              </div>
-              <div className="bg-stone-50 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-stone-900">
-                  {habit.startDate}
-                </div>
-                <div className="text-xs text-stone-500 mt-1">开始日期</div>
-              </div>
-            </div>
-          )}
+              )}
 
-          <div className="flex gap-3">
-            <Button
-              onClick={handleCheckin}
-              disabled={isCompleted || (isTask ? false : habit.checkedInToday)}
-              className="flex-1"
-              size="lg"
-            >
-              {isCompleted
-                ? '已完成 ✅'
-                : isTask
-                  ? '完成任务'
-                  : habit.checkedInToday
-                    ? '今日已完成 ✅'
-                    : '完成打卡'}
-            </Button>
-            <Button
-              onClick={() => setDeleteOpen(true)}
-              variant="outline"
-              size="lg"
-            >
-              删除
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleCheckin}
+                  disabled={isCompleted || (isTask ? false : habit.checkedInToday)}
+                  className="flex-1"
+                  size="lg"
+                >
+                  {isCompleted
+                    ? '已完成 ✅'
+                    : isTask
+                      ? '完成任务'
+                      : habit.checkedInToday
+                        ? '今日已完成 ✅'
+                        : '完成打卡'}
+                </Button>
+                <Button
+                  onClick={() => setDeleteOpen(true)}
+                  variant="outline"
+                  size="lg"
+                >
+                  删除
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
@@ -300,7 +316,6 @@ export default function HabitDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Celebration Modal */}
       <CelebrationModal
         open={showCelebration}
         onOpenChange={setShowCelebration}

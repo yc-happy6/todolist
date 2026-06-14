@@ -10,6 +10,7 @@
 ### Changed
 - 全局 CSS 变量架构重构：`:root` + `[data-theme]` 驱动所有颜色
 - 全部组件从硬编码 `stone-*`/`white`/`black` 迁移至 CSS 变量语义色（`bg-background`, `text-foreground`, `text-muted-foreground` 等）
+- **优先级调色板极简化**：移除所有文字标签，纯色块+选中发光边框+Hover显示提示词（核心/长线/琐事/备忘），rounded-xl + 柔和阴影
 
 ## [1.2.0] - 2026-06-14
 

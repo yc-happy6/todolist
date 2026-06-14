@@ -29,6 +29,8 @@ export type HabitMinAggregateOutputType = {
   userId: string | null
   name: string | null
   description: string | null
+  type: string | null
+  status: string | null
   frequency: string | null
   startDate: string | null
   reminderTime: string | null
@@ -40,6 +42,8 @@ export type HabitMaxAggregateOutputType = {
   userId: string | null
   name: string | null
   description: string | null
+  type: string | null
+  status: string | null
   frequency: string | null
   startDate: string | null
   reminderTime: string | null
@@ -51,6 +55,8 @@ export type HabitCountAggregateOutputType = {
   userId: number
   name: number
   description: number
+  type: number
+  status: number
   frequency: number
   startDate: number
   reminderTime: number
@@ -64,6 +70,8 @@ export type HabitMinAggregateInputType = {
   userId?: true
   name?: true
   description?: true
+  type?: true
+  status?: true
   frequency?: true
   startDate?: true
   reminderTime?: true
@@ -75,6 +83,8 @@ export type HabitMaxAggregateInputType = {
   userId?: true
   name?: true
   description?: true
+  type?: true
+  status?: true
   frequency?: true
   startDate?: true
   reminderTime?: true
@@ -86,6 +96,8 @@ export type HabitCountAggregateInputType = {
   userId?: true
   name?: true
   description?: true
+  type?: true
+  status?: true
   frequency?: true
   startDate?: true
   reminderTime?: true
@@ -170,6 +182,8 @@ export type HabitGroupByOutputType = {
   userId: string
   name: string
   description: string
+  type: string
+  status: string
   frequency: string
   startDate: string
   reminderTime: string
@@ -202,6 +216,8 @@ export type HabitWhereInput = {
   userId?: Prisma.StringFilter<"Habit"> | string
   name?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringFilter<"Habit"> | string
+  type?: Prisma.StringFilter<"Habit"> | string
+  status?: Prisma.StringFilter<"Habit"> | string
   frequency?: Prisma.StringFilter<"Habit"> | string
   startDate?: Prisma.StringFilter<"Habit"> | string
   reminderTime?: Prisma.StringFilter<"Habit"> | string
@@ -215,6 +231,8 @@ export type HabitOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   reminderTime?: Prisma.SortOrder
@@ -231,6 +249,8 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Habit"> | string
   name?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringFilter<"Habit"> | string
+  type?: Prisma.StringFilter<"Habit"> | string
+  status?: Prisma.StringFilter<"Habit"> | string
   frequency?: Prisma.StringFilter<"Habit"> | string
   startDate?: Prisma.StringFilter<"Habit"> | string
   reminderTime?: Prisma.StringFilter<"Habit"> | string
@@ -244,6 +264,8 @@ export type HabitOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   reminderTime?: Prisma.SortOrder
@@ -261,6 +283,8 @@ export type HabitScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   name?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   description?: Prisma.StringWithAggregatesFilter<"Habit"> | string
+  type?: Prisma.StringWithAggregatesFilter<"Habit"> | string
+  status?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   frequency?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   startDate?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   reminderTime?: Prisma.StringWithAggregatesFilter<"Habit"> | string
@@ -271,6 +295,8 @@ export type HabitCreateInput = {
   id?: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -284,6 +310,8 @@ export type HabitUncheckedCreateInput = {
   userId: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -295,6 +323,8 @@ export type HabitUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -308,6 +338,8 @@ export type HabitUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -320,6 +352,8 @@ export type HabitCreateManyInput = {
   userId: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -330,6 +364,8 @@ export type HabitUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -341,6 +377,8 @@ export type HabitUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -362,6 +400,8 @@ export type HabitCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   reminderTime?: Prisma.SortOrder
@@ -373,6 +413,8 @@ export type HabitMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   reminderTime?: Prisma.SortOrder
@@ -384,6 +426,8 @@ export type HabitMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   frequency?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   reminderTime?: Prisma.SortOrder
@@ -455,6 +499,8 @@ export type HabitCreateWithoutUserInput = {
   id?: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -466,6 +512,8 @@ export type HabitUncheckedCreateWithoutUserInput = {
   id?: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -506,6 +554,8 @@ export type HabitScalarWhereInput = {
   userId?: Prisma.StringFilter<"Habit"> | string
   name?: Prisma.StringFilter<"Habit"> | string
   description?: Prisma.StringFilter<"Habit"> | string
+  type?: Prisma.StringFilter<"Habit"> | string
+  status?: Prisma.StringFilter<"Habit"> | string
   frequency?: Prisma.StringFilter<"Habit"> | string
   startDate?: Prisma.StringFilter<"Habit"> | string
   reminderTime?: Prisma.StringFilter<"Habit"> | string
@@ -516,6 +566,8 @@ export type HabitCreateWithoutHabitLogsInput = {
   id?: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -528,6 +580,8 @@ export type HabitUncheckedCreateWithoutHabitLogsInput = {
   userId: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -554,6 +608,8 @@ export type HabitUpdateWithoutHabitLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -566,6 +622,8 @@ export type HabitUncheckedUpdateWithoutHabitLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -576,6 +634,8 @@ export type HabitCreateManyUserInput = {
   id?: string
   name: string
   description: string
+  type?: string
+  status?: string
   frequency?: string
   startDate: string
   reminderTime: string
@@ -586,6 +646,8 @@ export type HabitUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -597,6 +659,8 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -608,6 +672,8 @@ export type HabitUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   frequency?: Prisma.StringFieldUpdateOperationsInput | string
   startDate?: Prisma.StringFieldUpdateOperationsInput | string
   reminderTime?: Prisma.StringFieldUpdateOperationsInput | string
@@ -650,6 +716,8 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   userId?: boolean
   name?: boolean
   description?: boolean
+  type?: boolean
+  status?: boolean
   frequency?: boolean
   startDate?: boolean
   reminderTime?: boolean
@@ -664,6 +732,8 @@ export type HabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   name?: boolean
   description?: boolean
+  type?: boolean
+  status?: boolean
   frequency?: boolean
   startDate?: boolean
   reminderTime?: boolean
@@ -676,6 +746,8 @@ export type HabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   userId?: boolean
   name?: boolean
   description?: boolean
+  type?: boolean
+  status?: boolean
   frequency?: boolean
   startDate?: boolean
   reminderTime?: boolean
@@ -688,13 +760,15 @@ export type HabitSelectScalar = {
   userId?: boolean
   name?: boolean
   description?: boolean
+  type?: boolean
+  status?: boolean
   frequency?: boolean
   startDate?: boolean
   reminderTime?: boolean
   createdAt?: boolean
 }
 
-export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "description" | "frequency" | "startDate" | "reminderTime" | "createdAt", ExtArgs["result"]["habit"]>
+export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "description" | "type" | "status" | "frequency" | "startDate" | "reminderTime" | "createdAt", ExtArgs["result"]["habit"]>
 export type HabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   habitLogs?: boolean | Prisma.Habit$habitLogsArgs<ExtArgs>
@@ -718,6 +792,8 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     userId: string
     name: string
     description: string
+    type: string
+    status: string
     frequency: string
     startDate: string
     reminderTime: string
@@ -1151,6 +1227,8 @@ export interface HabitFieldRefs {
   readonly userId: Prisma.FieldRef<"Habit", 'String'>
   readonly name: Prisma.FieldRef<"Habit", 'String'>
   readonly description: Prisma.FieldRef<"Habit", 'String'>
+  readonly type: Prisma.FieldRef<"Habit", 'String'>
+  readonly status: Prisma.FieldRef<"Habit", 'String'>
   readonly frequency: Prisma.FieldRef<"Habit", 'String'>
   readonly startDate: Prisma.FieldRef<"Habit", 'String'>
   readonly reminderTime: Prisma.FieldRef<"Habit", 'String'>

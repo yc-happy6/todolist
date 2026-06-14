@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HeatMap } from '@/components/heatmap'
+import { CalendarView } from '@/components/calendar-view'
 
 interface Stats {
   totalCheckins: number
@@ -16,6 +17,17 @@ interface Stats {
 export default function StatsPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear())
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth() + 1)
+  const [checkedDates, setCheckedDates] = useState<Set<string>>(new Set())
+
+  const fetchCalendar = useCallback(async (year: number, month: number) => {
+    const res = await fetch(`/api/calendar?year=${year}&month=${month}`)
+    if (res.ok) {
+      const data = await res.json()
+      setCheckedDates(new Set(data.checkedDates))
+    }
+  }, [])
 
   useEffect(() => {
     fetch('/api/stats')
@@ -26,6 +38,10 @@ export default function StatsPage() {
       })
       .catch(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    fetchCalendar(calendarYear, calendarMonth)
+  }, [calendarYear, calendarMonth, fetchCalendar])
 
   if (loading) {
     return (
@@ -83,6 +99,24 @@ export default function StatsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Calendar View */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-base">月度打卡日历</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CalendarView
+            checkedDates={checkedDates}
+            year={calendarYear}
+            month={calendarMonth}
+            onMonthChange={(y, m) => {
+              setCalendarYear(y)
+              setCalendarMonth(m)
+            }}
+          />
+        </CardContent>
+      </Card>
 
       <Card className="mb-8">
         <CardHeader>

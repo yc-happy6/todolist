@@ -28,6 +28,25 @@ export async function GET() {
         where: { habitId: habit.id },
         orderBy: { completedDate: 'desc' },
       })
+
+      if (habit.type === 'TASK') {
+        return {
+          id: habit.id,
+          name: habit.name,
+          description: habit.description,
+          type: habit.type,
+          status: habit.status,
+          frequency: habit.frequency,
+          startDate: habit.startDate,
+          reminderTime: habit.reminderTime,
+          currentStreak: 0,
+          longestStreak: 0,
+          completionRate: 0,
+          totalCheckins: allLogs.length,
+          checkedInToday: habit.status === 'COMPLETED',
+        }
+      }
+
       const streak = calcStreak(allLogs.map((l) => l.completedDate))
       const totalLogs = allLogs.length
       const daysSinceStart = Math.max(
@@ -45,6 +64,8 @@ export async function GET() {
         id: habit.id,
         name: habit.name,
         description: habit.description,
+        type: habit.type,
+        status: habit.status,
         frequency: habit.frequency,
         startDate: habit.startDate,
         reminderTime: habit.reminderTime,
@@ -67,10 +88,15 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json()
-  const { name, description, frequency, startDate, reminderTime } = body
+  const { name, description, type, frequency, startDate, reminderTime } = body
+  const habitType = type || 'HABIT'
 
-  if (!name || !frequency || !startDate) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  if (!name) {
+    return NextResponse.json({ error: '名称不能为空' }, { status: 400 })
+  }
+
+  if (habitType === 'HABIT' && (!frequency || !startDate)) {
+    return NextResponse.json({ error: '习惯需要填写频率和开始日期' }, { status: 400 })
   }
 
   const habit = await prisma.habit.create({
@@ -78,8 +104,9 @@ export async function POST(request: NextRequest) {
       userId: session.user.id,
       name,
       description: description || '',
-      frequency: frequency || 'DAILY',
-      startDate,
+      type: habitType,
+      frequency: habitType === 'TASK' ? 'ONCE' : (frequency || 'DAILY'),
+      startDate: startDate || new Date().toISOString().split('T')[0],
       reminderTime: reminderTime || '',
     },
   })

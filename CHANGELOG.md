@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.0] - 2026-06-14
+
+### Added
+- **多主题换肤**: 4 套全局主题色 — 默认高效、深夜沉浸、无压莫兰迪、多巴胺唤醒
+- **主题切换器**: 导航栏 4 图标一键切换，丝滑过渡
+- **四象限优先级色固定**: P0-P3 优先级色彩不随主题改变，保持全局一致
+
+### Changed
+- 全局 CSS 变量架构重构：`:root` + `[data-theme]` 驱动所有颜色
+- 全部组件从硬编码 `stone-*`/`white`/`black` 迁移至 CSS 变量语义色（`bg-background`, `text-foreground`, `text-muted-foreground` 等）
+
 ## [1.2.0] - 2026-06-14
 
 ### Added

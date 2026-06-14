@@ -70,22 +70,22 @@ export default function NewHabitPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold text-stone-900 mb-2">
+      <h1 className="text-2xl font-bold text-foreground mb-2">
         创建新{type === 'TASK' ? '任务' : '习惯'}
       </h1>
-      <p className="text-stone-500 mb-8">
+      <p className="text-muted-foreground mb-8">
         任务是一次性的，习惯是重复打卡的
       </p>
 
       {/* Type Selector */}
-      <div className="flex bg-stone-100 rounded-lg p-1 mb-6">
+      <div className="flex bg-muted rounded-lg p-1 mb-6">
         <button
           type="button"
           onClick={() => setType('HABIT')}
           className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-all ${
             type === 'HABIT'
-              ? 'bg-white text-stone-900 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-card text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           习惯
@@ -95,8 +95,8 @@ export default function NewHabitPage() {
           onClick={() => setType('TASK')}
           className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-all ${
             type === 'TASK'
-              ? 'bg-white text-stone-900 shadow-sm'
-              : 'text-stone-500 hover:text-stone-700'
+              ? 'bg-card text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           任务
@@ -118,7 +118,7 @@ export default function NewHabitPage() {
                 className={`py-2 rounded-lg text-sm font-medium border-2 transition-all ${
                   selected
                     ? 'border-current shadow-sm'
-                    : 'border-transparent bg-stone-50 hover:bg-stone-100'
+                    : 'border-transparent bg-muted hover:bg-muted'
                 }`}
                 style={{
                   color: selected ? cfg.color : undefined,

@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
 interface CalendarViewProps {
   checkedDates: Set<string>
   year: number
@@ -10,12 +8,6 @@ interface CalendarViewProps {
 }
 
 const DAY_HEADERS = ['日', '一', '二', '三', '四', '五', '六']
-const MILESTONE_EMOJIS: Record<number, string> = {
-  3: '🌱',
-  7: '⭐',
-  30: '🏅',
-  100: '👑',
-}
 
 export function CalendarView({ checkedDates, year, month, onMonthChange }: CalendarViewProps) {
   const firstDay = new Date(year, month - 1, 1)
@@ -49,18 +41,18 @@ export function CalendarView({ checkedDates, year, month, onMonthChange }: Calen
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={prevMonth}
-          className="size-8 flex items-center justify-center rounded-md hover:bg-stone-200 text-stone-600 transition-colors"
+          className="size-8 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6"/>
           </svg>
         </button>
-        <span className="font-semibold text-stone-900">
+        <span className="font-semibold text-foreground">
           {year}年{month}月
         </span>
         <button
           onClick={nextMonth}
-          className="size-8 flex items-center justify-center rounded-md hover:bg-stone-200 text-stone-600 transition-colors"
+          className="size-8 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6"/>
@@ -72,7 +64,7 @@ export function CalendarView({ checkedDates, year, month, onMonthChange }: Calen
         {DAY_HEADERS.map((label) => (
           <div
             key={label}
-            className="text-center text-xs text-stone-400 py-1"
+            className="text-center text-xs text-muted-foreground py-1"
           >
             {label}
           </div>
@@ -92,7 +84,7 @@ export function CalendarView({ checkedDates, year, month, onMonthChange }: Calen
               className={`aspect-square flex items-center justify-center rounded-lg text-sm ${
                 checked
                   ? 'bg-emerald-500 text-white font-medium'
-                  : 'text-stone-700 hover:bg-stone-100'
+                  : 'text-foreground hover:bg-muted'
               } ${isToday ? 'ring-2 ring-emerald-400 ring-offset-1' : ''}`}
             >
               {day}
@@ -101,13 +93,13 @@ export function CalendarView({ checkedDates, year, month, onMonthChange }: Calen
         })}
       </div>
 
-      <div className="flex items-center gap-3 mt-4 text-xs text-stone-500 justify-center">
+      <div className="flex items-center gap-3 mt-4 text-xs text-muted-foreground justify-center">
         <div className="flex items-center gap-1">
           <div className="size-3 rounded bg-emerald-500" />
           <span>已打卡</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="size-3 rounded bg-stone-100 ring-2 ring-emerald-400" />
+          <div className="size-3 rounded bg-muted ring-2 ring-emerald-400" />
           <span>今天</span>
         </div>
       </div>

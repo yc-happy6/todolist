@@ -55,9 +55,9 @@ export function CelebrationModal({ open, onOpenChange, achievement }: Celebratio
           </div>
 
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-stone-900">太棒了！</h2>
-            <p className="text-stone-500">
-              你已连续坚持 <span className="font-bold text-stone-900">{achievement.requiredDays}</span> 天
+            <h2 className="text-xl font-bold text-foreground">太棒了！</h2>
+            <p className="text-muted-foreground">
+              你已连续坚持 <span className="font-bold text-foreground">{achievement.requiredDays}</span> 天
             </p>
             <div
               className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold text-white bg-gradient-to-r ${config.gradient}`}

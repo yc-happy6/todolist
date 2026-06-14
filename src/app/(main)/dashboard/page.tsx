@@ -104,7 +104,7 @@ export default function DashboardPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
         <WelcomeBanner />
-        <p className="text-stone-400 text-center">加载中...</p>
+        <p className="text-muted-foreground text-center">加载中...</p>
       </div>
     )
   }
@@ -126,11 +126,10 @@ export default function DashboardPage() {
     return (
       <div
         key={item.id}
-        className={`flex rounded-xl border border-stone-200 bg-white hover:shadow-sm transition-shadow group/card overflow-hidden ${
+        className={`flex rounded-xl border border-border bg-card hover:shadow-sm transition-shadow group/card overflow-hidden ${
           isCompleted ? 'opacity-70' : ''
         }`}
       >
-        {/* Priority color bar - 4px left indicator */}
         <div className={`w-1 shrink-0 ${barColor}`} />
 
         <div className="flex-1 p-5 min-w-0">
@@ -139,13 +138,12 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2 mb-1">
                 <Link
                   href={`/habits/${item.id}`}
-                  className={`font-semibold text-stone-900 hover:text-black truncate ${
-                    isCompleted ? 'line-through text-stone-400' : ''
+                  className={`font-semibold text-foreground hover:text-foreground/80 truncate ${
+                    isCompleted ? 'line-through text-muted-foreground' : ''
                   }`}
                 >
                   {item.name}
                 </Link>
-                {/* Priority tiny tag */}
                 <span
                   className="text-[10px] font-semibold px-1.5 py-0.5 rounded border"
                   style={{ color: pColor, borderColor: pColor, opacity: 0.8 }}
@@ -160,12 +158,12 @@ export default function DashboardPage() {
                 )}
               </div>
               {item.description && (
-                <p className="text-sm text-stone-500 truncate">
+                <p className="text-sm text-muted-foreground truncate">
                   {item.description}
                 </p>
               )}
               {!isTask && (
-                <div className="flex items-center gap-4 text-sm text-stone-500 mt-1.5">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1.5">
                   <span>🔥 连续 {item.currentStreak} 天</span>
                   <span>📊 {item.completionRate}%</span>
                   <span>✅ {item.totalCheckins} 次</span>
@@ -191,7 +189,7 @@ export default function DashboardPage() {
                 onClick={() => setDeleteTarget(item)}
                 variant="ghost"
                 size="icon"
-                className="size-8 text-stone-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
+                className="size-8 text-muted-foreground hover:text-red-500 hover:bg-red-50 opacity-0 group-hover/card:opacity-100 transition-opacity"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
@@ -212,10 +210,10 @@ export default function DashboardPage() {
         <Card className="text-center py-16">
           <CardContent>
             <div className="text-5xl mb-4">🌱</div>
-            <h3 className="text-lg font-semibold text-stone-700 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               还没有习惯或任务
             </h3>
-            <p className="text-stone-400 mb-6">
+            <p className="text-muted-foreground mb-6">
               创建你的第一个习惯或任务，开始养成之旅
             </p>
             <Link href="/habits/new">
@@ -227,7 +225,7 @@ export default function DashboardPage() {
         <div className="space-y-6">
           {tasks.length > 0 && (
             <div>
-              <h2 className="text-sm font-medium text-stone-500 mb-3">任务</h2>
+              <h2 className="text-sm font-medium text-muted-foreground mb-3">任务</h2>
               <div className="space-y-3">
                 {tasks.map(renderCard)}
               </div>
@@ -236,7 +234,7 @@ export default function DashboardPage() {
 
           {habitsOnly.length > 0 && (
             <div>
-              <h2 className="text-sm font-medium text-stone-500 mb-3">习惯</h2>
+              <h2 className="text-sm font-medium text-muted-foreground mb-3">习惯</h2>
               <div className="space-y-3">
                 {habitsOnly.map(renderCard)}
               </div>
@@ -245,7 +243,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Delete Confirm Dialog */}
       <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <DialogContent>
           <DialogHeader>

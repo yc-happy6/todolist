@@ -24,11 +24,11 @@ export default function LoginPage() {
   }, [state?.success, router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-full max-w-md mx-4 shadow-sm">
         <CardHeader className="space-y-1 text-center">
-          <div className="mx-auto mb-4 size-12 rounded-xl bg-black flex items-center justify-center">
-            <span className="text-white font-bold text-lg">F</span>
+          <div className="mx-auto mb-4 size-12 rounded-xl bg-foreground flex items-center justify-center">
+            <span className="text-background font-bold text-lg">F</span>
           </div>
           <CardTitle className="text-2xl font-bold">Focus Habit</CardTitle>
           <CardDescription>登录你的账号，继续习惯养成之旅</CardDescription>
@@ -62,9 +62,9 @@ export default function LoginPage() {
               登录
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-stone-500">
+          <p className="mt-4 text-center text-sm text-muted-foreground">
             还没有账号？{' '}
-            <Link href="/register" className="text-black font-medium hover:underline">
+            <Link href="/register" className="text-primary font-medium hover:underline">
               立即注册
             </Link>
           </p>

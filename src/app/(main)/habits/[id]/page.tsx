@@ -127,7 +127,7 @@ export default function HabitDetailPage() {
   if (loading) {
     return (
       <div className="max-w-lg mx-auto px-4 py-12">
-        <p className="text-stone-400 text-center">加载中...</p>
+        <p className="text-muted-foreground text-center">加载中...</p>
       </div>
     )
   }
@@ -142,14 +142,14 @@ export default function HabitDetailPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-12">
-      <div className="flex rounded-xl border border-stone-200 bg-white overflow-hidden">
+      <div className="flex rounded-xl border border-border bg-card overflow-hidden">
         <div className={`w-1 shrink-0 ${barColor}`} />
         <div className="flex-1">
           <Card className="border-0 shadow-none">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CardTitle className={`text-xl ${isCompleted ? 'line-through text-stone-400' : ''}`}>
+                  <CardTitle className={`text-xl ${isCompleted ? 'line-through text-muted-foreground' : ''}`}>
                     {habit.name}
                   </CardTitle>
                   <span
@@ -179,50 +179,50 @@ export default function HabitDetailPage() {
                 </Button>
               </div>
               {habit.description && (
-                <p className="text-stone-500 text-sm mt-1">{habit.description}</p>
+                <p className="text-muted-foreground text-sm mt-1">{habit.description}</p>
               )}
             </CardHeader>
             <CardContent className="space-y-6">
               {isTask ? (
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {isCompleted ? '已完成' : '进行中'}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">状态</div>
+                    <div className="text-xs text-muted-foreground mt-1">状态</div>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {habit.totalCheckins}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">完成次数</div>
+                    <div className="text-xs text-muted-foreground mt-1">完成次数</div>
                   </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {habit.currentStreak}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">当前连续</div>
+                    <div className="text-xs text-muted-foreground mt-1">当前连续</div>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {habit.longestStreak}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">历史最长</div>
+                    <div className="text-xs text-muted-foreground mt-1">历史最长</div>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {habit.totalCheckins}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">总打卡次数</div>
+                    <div className="text-xs text-muted-foreground mt-1">总打卡次数</div>
                   </div>
-                  <div className="bg-stone-50 rounded-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-stone-900">
+                  <div className="bg-muted rounded-lg p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
                       {habit.startDate}
                     </div>
-                    <div className="text-xs text-stone-500 mt-1">开始日期</div>
+                    <div className="text-xs text-muted-foreground mt-1">开始日期</div>
                   </div>
                 </div>
               )}
@@ -255,7 +255,6 @@ export default function HabitDetailPage() {
         </div>
       </div>
 
-      {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
@@ -296,7 +295,6 @@ export default function HabitDetailPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Dialog */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent>
           <DialogHeader>

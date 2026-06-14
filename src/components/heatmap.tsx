@@ -3,7 +3,7 @@ interface HeatMapProps {
 }
 
 function getColor(count: number): string {
-  if (count === 0) return 'bg-stone-100'
+  if (count === 0) return 'bg-muted'
   if (count === 1) return 'bg-emerald-200'
   if (count === 2) return 'bg-emerald-400'
   if (count === 3) return 'bg-emerald-500'
@@ -37,7 +37,7 @@ export function HeatMap({ data }: HeatMapProps) {
         {dayLabels
           .filter((_, i) => i % 2 === 0)
           .map((label, i) => (
-            <span key={i} className="text-[10px] text-stone-400 leading-[14px]">
+            <span key={i} className="text-[10px] text-muted-foreground leading-[14px]">
               {label}
             </span>
           ))}

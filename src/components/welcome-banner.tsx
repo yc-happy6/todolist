@@ -18,10 +18,10 @@ function getTodayDate() {
 export function WelcomeBanner() {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl font-bold text-stone-900">
+      <h1 className="text-2xl font-bold text-foreground">
         {getGreeting()}，Louis
       </h1>
-      <p className="text-stone-500 mt-1">{getTodayDate()}</p>
+      <p className="text-muted-foreground mt-1">{getTodayDate()}</p>
     </div>
   )
 }

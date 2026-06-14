@@ -30,16 +30,16 @@ export default function AchievementsPage() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold text-stone-900 mb-8">成就</h1>
-        <p className="text-stone-400 text-center">加载中...</p>
+        <h1 className="text-2xl font-bold text-foreground mb-8">成就</h1>
+        <p className="text-muted-foreground text-center">加载中...</p>
       </div>
     )
   }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold text-stone-900 mb-2">成就</h1>
-      <p className="text-stone-500 mb-8">
+      <h1 className="text-2xl font-bold text-foreground mb-2">成就</h1>
+      <p className="text-muted-foreground mb-8">
         坚持打卡，解锁更多成就
       </p>
 
@@ -61,16 +61,16 @@ export default function AchievementsPage() {
                       className={`size-10 rounded-full flex items-center justify-center text-lg ${
                         a.unlocked
                           ? 'bg-emerald-100'
-                          : 'bg-stone-100 grayscale'
+                          : 'bg-muted grayscale'
                       }`}
                     >
                       {a.unlocked ? '🏆' : '🔒'}
                     </div>
                     <div>
-                      <div className="font-semibold text-stone-900">
+                      <div className="font-semibold text-foreground">
                         {a.name}
                       </div>
-                      <div className="text-sm text-stone-500">
+                      <div className="text-sm text-muted-foreground">
                         连续坚持 {a.requiredDays} 天
                         {a.unlocked && a.unlockedAt && (
                           <span className="ml-2">
@@ -79,9 +79,9 @@ export default function AchievementsPage() {
                         )}
                       </div>
                       {!a.unlocked && (
-                        <div className="mt-2 w-full max-w-[200px] h-1.5 bg-stone-200 rounded-full overflow-hidden">
+                        <div className="mt-2 w-full max-w-[200px] h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-stone-400 rounded-full transition-all"
+                            className="h-full bg-muted-foreground rounded-full transition-all"
                             style={{ width: `${progress}%` }}
                           />
                         </div>

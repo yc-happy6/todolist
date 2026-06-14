@@ -24,11 +24,11 @@ export default function RegisterPage() {
   }, [state?.success, router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-stone-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <Card className="w-full max-w-md mx-4 shadow-sm">
         <CardHeader className="space-y-1 text-center">
-          <div className="mx-auto mb-4 size-12 rounded-xl bg-black flex items-center justify-center">
-            <span className="text-white font-bold text-lg">F</span>
+          <div className="mx-auto mb-4 size-12 rounded-xl bg-foreground flex items-center justify-center">
+            <span className="text-background font-bold text-lg">F</span>
           </div>
           <CardTitle className="text-2xl font-bold">创建账号</CardTitle>
           <CardDescription>开始你的习惯养成之旅</CardDescription>
@@ -63,9 +63,9 @@ export default function RegisterPage() {
               注册
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-stone-500">
+          <p className="mt-4 text-center text-sm text-muted-foreground">
             已有账号？{' '}
-            <Link href="/login" className="text-black font-medium hover:underline">
+            <Link href="/login" className="text-primary font-medium hover:underline">
               立即登录
             </Link>
           </p>

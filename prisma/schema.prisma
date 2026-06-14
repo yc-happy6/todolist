@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  createdAt     DateTime @default(now())
+
+  habits          Habit[]
+  habitLogs       HabitLog[]
+  userAchievements UserAchievement[]
+}
+
+model Habit {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  description  String
+  frequency    String   @default("DAILY")
+  startDate    String
+  reminderTime String
+  createdAt    DateTime @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habitLogs HabitLog[]
+}
+
+model HabitLog {
+  id            String   @id @default(cuid())
+  habitId       String
+  userId        String
+  completedDate String
+  createdAt     DateTime @default(now())
+
+  habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, completedDate])
+}
+
+model Achievement {
+  id           String @id @default(cuid())
+  name         String
+  requiredDays Int
+
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+}

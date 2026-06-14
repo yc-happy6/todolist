@@ -1,0 +1,249 @@
+'use client'
+
+import { useEffect, useState, useCallback } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { toast } from 'sonner'
+
+interface HabitDetail {
+  id: string
+  name: string
+  description: string
+  frequency: string
+  startDate: string
+  reminderTime: string
+  currentStreak: number
+  longestStreak: number
+  totalCheckins: number
+  checkedInToday: boolean
+}
+
+export default function HabitDetailPage() {
+  const params = useParams()
+  const router = useRouter()
+  const [habit, setHabit] = useState<HabitDetail | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [editName, setEditName] = useState('')
+  const [editDesc, setEditDesc] = useState('')
+  const [editReminder, setEditReminder] = useState('')
+
+  const fetchHabit = useCallback(async () => {
+    const res = await fetch(`/api/habits/${params.id}`)
+    if (res.ok) {
+      const data = await res.json()
+      setHabit(data)
+    } else {
+      router.push('/dashboard')
+    }
+    setLoading(false)
+  }, [params.id, router])
+
+  useEffect(() => {
+    fetchHabit()
+  }, [fetchHabit])
+
+  const handleCheckin = async () => {
+    const res = await fetch(`/api/habits/${params.id}/checkin`, {
+      method: 'POST',
+    })
+    if (res.ok) {
+      const data = await res.json()
+      toast(`🎉 连续打卡 ${data.currentStreak} 天`)
+      if (data.newAchievements?.length > 0) {
+        for (const name of data.newAchievements) {
+          toast(`🏆 解锁成就：${name}`)
+        }
+      }
+      fetchHabit()
+    } else {
+      const err = await res.json()
+      toast(err.error || '打卡失败')
+    }
+  }
+
+  const handleEdit = async () => {
+    const res = await fetch(`/api/habits/${params.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: editName,
+        description: editDesc,
+        reminderTime: editReminder,
+      }),
+    })
+    if (res.ok) {
+      toast('习惯已更新')
+      setEditOpen(false)
+      fetchHabit()
+    }
+  }
+
+  const handleDelete = async () => {
+    const res = await fetch(`/api/habits/${params.id}`, { method: 'DELETE' })
+    if (res.ok) {
+      toast('习惯已删除')
+      router.push('/dashboard')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-12">
+        <p className="text-stone-400 text-center">加载中...</p>
+      </div>
+    )
+  }
+
+  if (!habit) return null
+
+  return (
+    <div className="max-w-lg mx-auto px-4 py-12">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-xl">{habit.name}</CardTitle>
+              <Badge variant="secondary">
+                {habit.frequency === 'DAILY' ? '每日' : '每周'}
+              </Badge>
+            </div>
+            <Button
+              onClick={() => {
+                setEditName(habit.name)
+                setEditDesc(habit.description)
+                setEditReminder(habit.reminderTime)
+                setEditOpen(true)
+              }}
+              variant="ghost"
+              size="sm"
+            >
+              编辑
+            </Button>
+          </div>
+          {habit.description && (
+            <p className="text-stone-500 text-sm mt-1">{habit.description}</p>
+          )}
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-stone-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-stone-900">
+                {habit.currentStreak}
+              </div>
+              <div className="text-xs text-stone-500 mt-1">当前连续</div>
+            </div>
+            <div className="bg-stone-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-stone-900">
+                {habit.longestStreak}
+              </div>
+              <div className="text-xs text-stone-500 mt-1">历史最长</div>
+            </div>
+            <div className="bg-stone-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-stone-900">
+                {habit.totalCheckins}
+              </div>
+              <div className="text-xs text-stone-500 mt-1">总打卡次数</div>
+            </div>
+            <div className="bg-stone-50 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-stone-900">
+                {habit.startDate}
+              </div>
+              <div className="text-xs text-stone-500 mt-1">开始日期</div>
+            </div>
+          </div>
+
+          <div className="flex gap-3">
+            <Button
+              onClick={handleCheckin}
+              disabled={habit.checkedInToday}
+              className="flex-1"
+              size="lg"
+            >
+              {habit.checkedInToday ? '今日已完成 ✅' : '完成打卡'}
+            </Button>
+            <Button
+              onClick={() => setDeleteOpen(true)}
+              variant="outline"
+              size="lg"
+            >
+              删除
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>编辑习惯</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>名称</Label>
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>目标描述</Label>
+              <Input
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>提醒时间</Label>
+              <Input
+                type="time"
+                value={editReminder}
+                onChange={(e) => setEditReminder(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleEdit}>保存修改</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>删除习惯</DialogTitle>
+            <DialogDescription>
+              确定要删除「{habit.name}」吗？此操作不可撤销。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)}>
+              取消
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              确认删除
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}

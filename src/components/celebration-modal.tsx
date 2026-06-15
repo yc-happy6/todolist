@@ -32,13 +32,16 @@ interface CelebrationModalProps {
 export function CelebrationModal({ open, onOpenChange, achievement }: CelebrationModalProps) {
   useEffect(() => {
     if (open) {
-      import('canvas-confetti').then(({ default: confetti }) => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6, x: 0.5 },
+      const frame = requestAnimationFrame(() => {
+        import('canvas-confetti').then(({ default: confetti }) => {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6, x: 0.5 },
+          })
         })
       })
+      return () => cancelAnimationFrame(frame)
     }
   }, [open])
 

@@ -1,3 +1,7 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+
 function getGreeting() {
   const hour = new Date().getHours()
   if (hour >= 5 && hour < 12) return '早上好'
@@ -16,12 +20,20 @@ function getTodayDate() {
 }
 
 export function WelcomeBanner() {
+  const [greeting, setGreeting] = useState('')
+  const [todayDate, setTodayDate] = useState('')
+
+  useEffect(() => {
+    setGreeting(getGreeting())
+    setTodayDate(getTodayDate())
+  }, [])
+
   return (
     <div className="mb-8">
       <h1 className="text-2xl font-bold text-foreground">
-        {getGreeting()}，Louis
+        {greeting || ' '}，Louis
       </h1>
-      <p className="text-muted-foreground mt-1">{getTodayDate()}</p>
+      <p className="text-muted-foreground mt-1">{todayDate || ' '}</p>
     </div>
   )
 }

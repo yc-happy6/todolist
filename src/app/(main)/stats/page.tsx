@@ -17,9 +17,14 @@ interface Stats {
 export default function StatsPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
-  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear())
-  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth() + 1)
+  const [calendarYear, setCalendarYear] = useState(0)
+  const [calendarMonth, setCalendarMonth] = useState(0)
   const [checkedDates, setCheckedDates] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    setCalendarYear(new Date().getFullYear())
+    setCalendarMonth(new Date().getMonth() + 1)
+  }, [])
 
   const fetchCalendar = useCallback(async (year: number, month: number) => {
     const res = await fetch(`/api/calendar?year=${year}&month=${month}`)

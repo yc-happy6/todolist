@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,7 +21,12 @@ export default function NewHabitPage() {
   const [submitting, setSubmitting] = useState(false)
   const [type, setType] = useState<'HABIT' | 'TASK'>('HABIT')
   const [priority, setPriority] = useState<Priority>('P2')
+  const [startDate, setStartDate] = useState('')
   const [snackbar, setSnackbar] = useState<{message: string; type: 'success' | 'delete'} | null>(null)
+
+  useEffect(() => {
+    setStartDate(new Date().toISOString().split('T')[0])
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -179,7 +184,8 @@ export default function NewHabitPage() {
                     name="startDate"
                     type="date"
                     required
-                    defaultValue={new Date().toISOString().split('T')[0]}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
                   />
                 </div>
 

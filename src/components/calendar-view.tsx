@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
 interface CalendarViewProps {
   checkedDates: Set<string>
   year: number
@@ -15,8 +17,11 @@ export function CalendarView({ checkedDates, year, month, onMonthChange }: Calen
   const daysInMonth = lastDay.getDate()
   const startDayOfWeek = firstDay.getDay()
 
-  const today = new Date()
-  const todayStr = today.toISOString().split('T')[0]
+  const [todayStr, setTodayStr] = useState('')
+
+  useEffect(() => {
+    setTodayStr(new Date().toISOString().split('T')[0])
+  }, [])
 
   const prevMonth = () => {
     const d = new Date(year, month - 2, 1)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { flushSync } from 'react-dom'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -79,7 +80,9 @@ export default function HabitDetailPage() {
   }, [fetchHabit])
 
   const handleCheckin = async () => {
-    setCheckinAnimating(true)
+    flushSync(() => {
+      setCheckinAnimating(true)
+    })
     const res = await fetch(`/api/habits/${params.id}/checkin`, {
       method: 'POST',
     })
@@ -92,8 +95,10 @@ export default function HabitDetailPage() {
       }
       if (data.newAchievements?.length > 0) {
         const latest = data.newAchievements[data.newAchievements.length - 1]
-        setCelebrationAchievement(latest)
-        setShowCelebration(true)
+        flushSync(() => {
+          setCelebrationAchievement(latest)
+          setShowCelebration(true)
+        })
       }
       fetchHabit()
     } else {

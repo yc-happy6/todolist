@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
+import { flushSync } from 'react-dom'
 import Link from 'next/link'
 import { WelcomeBanner } from '@/components/welcome-banner'
 import { Card, CardContent } from '@/components/ui/card'
@@ -97,8 +98,10 @@ export default function DashboardPage() {
     const prevStreak = prevHabit?.currentStreak ?? 0
     const prevLevel = getFlameLevel(prevStreak)
 
-    setCheckinAnimatingId(habitId)
-    setFeedback({ x, y, message: '打卡成功！+1 🔥', type: 'success' })
+    flushSync(() => {
+      setCheckinAnimatingId(habitId)
+      setFeedback({ x, y, message: '打卡成功！+1 🔥', type: 'success' })
+    })
 
     const res = await fetch(`/api/habits/${habitId}/checkin`, {
       method: 'POST',
@@ -126,8 +129,10 @@ export default function DashboardPage() {
 
       if (data.newAchievements?.length > 0) {
         const latest = data.newAchievements[data.newAchievements.length - 1]
-        setCelebrationAchievement(latest)
-        setShowCelebration(true)
+        flushSync(() => {
+          setCelebrationAchievement(latest)
+          setShowCelebration(true)
+        })
       }
       fetchHabits()
     } else {

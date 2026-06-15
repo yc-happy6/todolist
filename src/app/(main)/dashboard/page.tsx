@@ -15,6 +15,9 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { CelebrationModal } from '@/components/celebration-modal'
+import { StreakFlame } from '@/components/streak-flame'
+import { ActionFeedback } from '@/components/action-feedback'
+import { GlobalSnackbar } from '@/components/global-snackbar'
 import { toast } from 'sonner'
 import { priorityLabel, priorityBarColor, priorityColor } from '@/lib/priority'
 
@@ -38,6 +41,27 @@ interface CelebrationAchievement {
   requiredDays: number
 }
 
+interface FeedbackState {
+  x: number
+  y: number
+  message: string
+  type: 'success' | 'delete'
+}
+
+interface SnackbarState {
+  message: string
+  type: 'success' | 'delete'
+}
+
+function getFlameLevel(streak: number): number {
+  if (streak >= 30) return 5
+  if (streak >= 14) return 4
+  if (streak >= 7) return 3
+  if (streak >= 4) return 2
+  if (streak >= 2) return 1
+  return 0
+}
+
 export default function DashboardPage() {
   const [habits, setHabits] = useState<HabitData[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,6 +72,8 @@ export default function DashboardPage() {
   const [checkinAnimatingId, setCheckinAnimatingId] = useState<string | null>(null)
   const [removingId, setRemovingId] = useState<string | null>(null)
   const removingRef = useRef<string | null>(null)
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null)
+  const [snackbar, setSnackbar] = useState<SnackbarState | null>(null)
 
   const fetchHabits = useCallback(async () => {
     const res = await fetch('/api/habits')
@@ -61,18 +87,43 @@ export default function DashboardPage() {
     fetchHabits()
   }, [fetchHabits])
 
-  const handleCheckin = async (habitId: string) => {
+  const handleCheckin = async (habitId: string, event: React.MouseEvent) => {
+    const btn = event.currentTarget as HTMLElement
+    const rect = btn.getBoundingClientRect()
+    const x = rect.left + rect.width / 2
+    const y = rect.top
+
+    const prevHabit = habits.find(h => h.id === habitId)
+    const prevStreak = prevHabit?.currentStreak ?? 0
+    const prevLevel = getFlameLevel(prevStreak)
+
     setCheckinAnimatingId(habitId)
+    setFeedback({ x, y, message: '打卡成功！+1 🔥', type: 'success' })
+
     const res = await fetch(`/api/habits/${habitId}/checkin`, {
       method: 'POST',
     })
     if (res.ok) {
       const data = await res.json()
+      const newStreak = data.currentStreak ?? 0
+      const newLevel = getFlameLevel(newStreak)
+
       if (data.taskCompleted) {
-        toast('任务已完成')
+        setSnackbar({ message: '任务已完成', type: 'success' })
       } else {
-        toast(`连续打卡 ${data.currentStreak} 天`)
+        setSnackbar({ message: `连续打卡 ${newStreak} 天`, type: 'success' })
       }
+
+      if (prevLevel === 0 && newLevel >= 1) {
+        setTimeout(() => {
+          toast('✨ 获得习惯火花！继续坚持让它更旺～')
+        }, 300)
+      } else if (newLevel > prevLevel && prevLevel >= 1) {
+        setTimeout(() => {
+          toast('🔥 火花升级！越来越旺了～')
+        }, 300)
+      }
+
       if (data.newAchievements?.length > 0) {
         const latest = data.newAchievements[data.newAchievements.length - 1]
         setCelebrationAchievement(latest)
@@ -87,9 +138,19 @@ export default function DashboardPage() {
   }
 
   const handleDeleteConfirm = (item: HabitData) => {
+    const btn = document.activeElement as HTMLElement
+    const rect = btn?.getBoundingClientRect()
     setDeleteTarget(null)
     setRemovingId(item.id)
     removingRef.current = item.id
+    if (rect) {
+      setFeedback({
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+        message: `已删除「${item.name}」`,
+        type: 'delete',
+      })
+    }
   }
 
   const handleDelete = async () => {
@@ -105,8 +166,6 @@ export default function DashboardPage() {
       method: 'DELETE',
     })
     if (res.ok) {
-      const target = habits.find(h => h.id === itemId)
-      if (target) toast(`已删除「${target.name}」`)
       fetchHabits()
     } else {
       toast('删除失败，请重试')
@@ -167,6 +226,9 @@ export default function DashboardPage() {
                 >
                   {item.name}
                 </Link>
+                {!isTask && (
+                  <StreakFlame streak={item.currentStreak} />
+                )}
                 <span
                   className="text-[10px] font-semibold px-1.5 py-0.5 rounded border"
                   style={{ color: pColor, borderColor: pColor, opacity: 0.8 }}
@@ -187,7 +249,6 @@ export default function DashboardPage() {
               )}
               {!isTask && (
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1.5">
-                  <span>🔥 连续 {item.currentStreak} 天</span>
                   <span>📊 {item.completionRate}%</span>
                   <span>✅ {item.totalCheckins} 次</span>
                 </div>
@@ -195,7 +256,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center gap-1.5 ml-4 shrink-0">
               <Button
-                onClick={() => handleCheckin(item.id)}
+                onClick={(e) => handleCheckin(item.id, e)}
                 disabled={isCompleted || (!isTask && item.checkedInToday) || isCheckinAnim}
                 variant={isCompleted || (!isTask && item.checkedInToday) ? 'ghost' : 'default'}
                 size="sm"
@@ -297,6 +358,24 @@ export default function DashboardPage() {
         onOpenChange={setShowCelebration}
         achievement={celebrationAchievement}
       />
+
+      {feedback && (
+        <ActionFeedback
+          x={feedback.x}
+          y={feedback.y}
+          message={feedback.message}
+          type={feedback.type}
+          onClose={() => setFeedback(null)}
+        />
+      )}
+
+      {snackbar && (
+        <GlobalSnackbar
+          message={snackbar.message}
+          type={snackbar.type}
+          onClose={() => setSnackbar(null)}
+        />
+      )}
     </div>
   )
 }

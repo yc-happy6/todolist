@@ -214,6 +214,17 @@
   --nav-border: oklch(0.90 0.018 75);
 }
 
+@keyframes pop-bounce {
+  0%   { transform: scale(0.8); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shrink-out {
+  0%   { transform: scaleX(1); opacity: 1; max-height: 200px; margin-bottom: 12px; }
+  100% { transform: scaleX(0); opacity: 0; max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

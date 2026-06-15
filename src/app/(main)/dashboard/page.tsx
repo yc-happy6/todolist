@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { WelcomeBanner } from '@/components/welcome-banner'
 import { Card, CardContent } from '@/components/ui/card'
@@ -45,6 +45,9 @@ export default function DashboardPage() {
   const [deleting, setDeleting] = useState(false)
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationAchievement, setCelebrationAchievement] = useState<CelebrationAchievement | null>(null)
+  const [checkinAnimatingId, setCheckinAnimatingId] = useState<string | null>(null)
+  const [removingId, setRemovingId] = useState<string | null>(null)
+  const removingRef = useRef<string | null>(null)
 
   const fetchHabits = useCallback(async () => {
     const res = await fetch('/api/habits')
@@ -59,6 +62,7 @@ export default function DashboardPage() {
   }, [fetchHabits])
 
   const handleCheckin = async (habitId: string) => {
+    setCheckinAnimatingId(habitId)
     const res = await fetch(`/api/habits/${habitId}/checkin`, {
       method: 'POST',
     })
@@ -79,21 +83,35 @@ export default function DashboardPage() {
       const err = await res.json()
       toast(err.error || '打卡失败')
     }
+    setTimeout(() => setCheckinAnimatingId(null), 800)
+  }
+
+  const handleDeleteConfirm = (item: HabitData) => {
+    setDeleteTarget(null)
+    setRemovingId(item.id)
+    removingRef.current = item.id
   }
 
   const handleDelete = async () => {
     if (!deleteTarget) return
+    handleDeleteConfirm(deleteTarget)
+  }
+
+  const onShrinkEnd = async (itemId: string) => {
+    if (removingRef.current !== itemId) return
+    removingRef.current = null
     setDeleting(true)
-    const res = await fetch(`/api/habits/${deleteTarget.id}`, {
+    const res = await fetch(`/api/habits/${itemId}`, {
       method: 'DELETE',
     })
     if (res.ok) {
-      toast(`已删除「${deleteTarget.name}」`)
-      setDeleteTarget(null)
+      const target = habits.find(h => h.id === itemId)
+      if (target) toast(`已删除「${target.name}」`)
       fetchHabits()
     } else {
       toast('删除失败，请重试')
     }
+    setRemovingId(null)
     setDeleting(false)
   }
 
@@ -122,13 +140,18 @@ export default function DashboardPage() {
     const barColor = priorityBarColor(item.priority)
     const pColor = priorityColor(item.priority)
     const pLabel = priorityLabel(item.priority)
+    const isRemoving = removingId === item.id
+    const isCheckinAnim = checkinAnimatingId === item.id
 
     return (
       <div
         key={item.id}
-        className={`flex rounded-xl border border-border bg-card hover:shadow-sm transition-shadow group/card overflow-hidden ${
+        className={`flex rounded-xl border border-border bg-card group/card overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
           isCompleted ? 'opacity-70' : ''
-        }`}
+        } ${isRemoving ? 'animate-[shrink-out_300ms_ease-in_forwards] overflow-hidden' : ''}`}
+        onAnimationEnd={() => {
+          if (isRemoving) onShrinkEnd(item.id)
+        }}
       >
         <div className={`w-1 shrink-0 ${barColor}`} />
 
@@ -173,17 +196,22 @@ export default function DashboardPage() {
             <div className="flex items-center gap-1.5 ml-4 shrink-0">
               <Button
                 onClick={() => handleCheckin(item.id)}
-                disabled={isCompleted || (!isTask && item.checkedInToday)}
+                disabled={isCompleted || (!isTask && item.checkedInToday) || isCheckinAnim}
                 variant={isCompleted || (!isTask && item.checkedInToday) ? 'ghost' : 'default'}
                 size="sm"
+                className="active:scale-90 transition-transform duration-150"
               >
-                {isCompleted
-                  ? '已完成'
-                  : isTask
-                    ? '完成'
-                    : item.checkedInToday
-                      ? '已完成'
-                      : '打卡'}
+                {isCheckinAnim ? (
+                  <span style={{ animation: 'pop-bounce 0.4s ease-out' }}>✓</span>
+                ) : isCompleted ? (
+                  '已完成'
+                ) : isTask ? (
+                  '完成'
+                ) : item.checkedInToday ? (
+                  '已完成'
+                ) : (
+                  '打卡'
+                )}
               </Button>
               <Button
                 onClick={() => setDeleteTarget(item)}

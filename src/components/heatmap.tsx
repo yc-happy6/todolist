@@ -12,9 +12,7 @@ function getColor(count: number): string {
 
 export function HeatMap({ data }: HeatMapProps) {
   const entries = Object.entries(data).sort(([a], [b]) => a.localeCompare(b))
-  const maxCount = Math.max(...Object.values(data), 1)
 
-  // Group by week
   const weeks: { date: string; count: number }[][] = []
   let currentWeek: { date: string; count: number }[] = []
 
@@ -48,11 +46,17 @@ export function HeatMap({ data }: HeatMapProps) {
             {week.map((day) => (
               <div
                 key={day.date}
-                className={`w-[14px] h-[14px] rounded-sm ${getColor(
-                  day.count
-                )} transition-colors`}
-                title={`${day.date}: ${day.count} 次打卡`}
-              />
+                className="relative group/tile"
+              >
+                <div
+                  className={`w-[14px] h-[14px] rounded-sm ${getColor(
+                    day.count
+                  )} transition-all duration-150 hover:scale-120`}
+                />
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs px-2 py-1 rounded shadow whitespace-nowrap z-10 opacity-0 group-hover/tile:opacity-100 transition-opacity pointer-events-none">
+                  {day.date}: {day.count} 次打卡
+                </span>
+              </div>
             ))}
           </div>
         ))}

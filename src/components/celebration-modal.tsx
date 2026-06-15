@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,18 @@ interface CelebrationModalProps {
 }
 
 export function CelebrationModal({ open, onOpenChange, achievement }: CelebrationModalProps) {
+  useEffect(() => {
+    if (open) {
+      import('canvas-confetti').then(({ default: confetti }) => {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6, x: 0.5 },
+        })
+      })
+    }
+  }, [open])
+
   if (!achievement) return null
 
   const config = MILESTONE_CONFIG[achievement.requiredDays] || {

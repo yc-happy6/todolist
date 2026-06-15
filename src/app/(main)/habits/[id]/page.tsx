@@ -60,6 +60,7 @@ export default function HabitDetailPage() {
   const [editReminder, setEditReminder] = useState('')
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationAchievement, setCelebrationAchievement] = useState<CelebrationAchievement | null>(null)
+  const [checkinAnimating, setCheckinAnimating] = useState(false)
 
   const fetchHabit = useCallback(async () => {
     const res = await fetch(`/api/habits/${params.id}`)
@@ -77,6 +78,7 @@ export default function HabitDetailPage() {
   }, [fetchHabit])
 
   const handleCheckin = async () => {
+    setCheckinAnimating(true)
     const res = await fetch(`/api/habits/${params.id}/checkin`, {
       method: 'POST',
     })
@@ -97,6 +99,7 @@ export default function HabitDetailPage() {
       const err = await res.json()
       toast(err.error || '打卡失败')
     }
+    setTimeout(() => setCheckinAnimating(false), 800)
   }
 
   const handleEdit = async () => {
@@ -230,17 +233,21 @@ export default function HabitDetailPage() {
               <div className="flex gap-3">
                 <Button
                   onClick={handleCheckin}
-                  disabled={isCompleted || (isTask ? false : habit.checkedInToday)}
-                  className="flex-1"
+                  disabled={isCompleted || (isTask ? false : habit.checkedInToday) || checkinAnimating}
+                  className="flex-1 active:scale-90 transition-transform duration-150"
                   size="lg"
                 >
-                  {isCompleted
-                    ? '已完成 ✅'
-                    : isTask
-                      ? '完成任务'
-                      : habit.checkedInToday
-                        ? '今日已完成 ✅'
-                        : '完成打卡'}
+                  {checkinAnimating ? (
+                    <span style={{ animation: 'pop-bounce 0.4s ease-out' }}>✓</span>
+                  ) : isCompleted ? (
+                    '已完成 ✅'
+                  ) : isTask ? (
+                    '完成任务'
+                  ) : habit.checkedInToday ? (
+                    '今日已完成 ✅'
+                  ) : (
+                    '完成打卡'
+                  )}
                 </Button>
                 <Button
                   onClick={() => setDeleteOpen(true)}

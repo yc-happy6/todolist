@@ -56,9 +56,6 @@ function getFlameLevel(streak: number): number {
 }
 
 export function StreakFlame({ streak }: StreakFlameProps) {
-  if (streak < 1) return null
-
-  const config = getFlameConfig(streak)
   const [pulsing, setPulsing] = useState(false)
   const prevLevel = useRef(getFlameLevel(streak))
 
@@ -72,6 +69,10 @@ export function StreakFlame({ streak }: StreakFlameProps) {
     }
     prevLevel.current = currentLevel
   }, [streak])
+
+  if (streak < 1) return null
+
+  const config = getFlameConfig(streak)
 
   return (
     <span

@@ -18,7 +18,7 @@ import { CelebrationModal } from '@/components/celebration-modal'
 import { StreakFlame } from '@/components/streak-flame'
 import { ActionFeedback } from '@/components/action-feedback'
 import { GlobalSnackbar } from '@/components/global-snackbar'
-import { toast } from 'sonner'
+
 import { priorityLabel, priorityBarColor, priorityColor } from '@/lib/priority'
 
 interface HabitData {
@@ -116,11 +116,11 @@ export default function DashboardPage() {
 
       if (prevLevel === 0 && newLevel >= 1) {
         setTimeout(() => {
-          toast('✨ 获得习惯火花！继续坚持让它更旺～')
+          setSnackbar({ message: '✨ 获得习惯火花！继续坚持让它更旺～', type: 'success' })
         }, 300)
       } else if (newLevel > prevLevel && prevLevel >= 1) {
         setTimeout(() => {
-          toast('🔥 火花升级！越来越旺了～')
+          setSnackbar({ message: '🔥 火花升级！越来越旺了～', type: 'success' })
         }, 300)
       }
 
@@ -132,7 +132,7 @@ export default function DashboardPage() {
       fetchHabits()
     } else {
       const err = await res.json()
-      toast(err.error || '打卡失败')
+      setSnackbar({ message: err.error || '打卡失败', type: 'delete' })
     }
     setTimeout(() => setCheckinAnimatingId(null), 800)
   }
@@ -168,7 +168,7 @@ export default function DashboardPage() {
     if (res.ok) {
       fetchHabits()
     } else {
-      toast('删除失败，请重试')
+      setSnackbar({ message: '删除失败，请重试', type: 'delete' })
     }
     setRemovingId(null)
     setDeleting(false)

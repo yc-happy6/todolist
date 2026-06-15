@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { toast } from 'sonner'
+import { GlobalSnackbar } from '@/components/global-snackbar'
 import { PRIORITY_CONFIG, PRIORITY_ORDER, type Priority } from '@/lib/priority'
 
 export default function NewHabitPage() {
@@ -21,6 +21,7 @@ export default function NewHabitPage() {
   const [submitting, setSubmitting] = useState(false)
   const [type, setType] = useState<'HABIT' | 'TASK'>('HABIT')
   const [priority, setPriority] = useState<Priority>('P2')
+  const [snackbar, setSnackbar] = useState<{message: string; type: 'success' | 'delete'} | null>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -41,13 +42,13 @@ export default function NewHabitPage() {
     }
 
     if (!body.name) {
-      toast('请填写名称')
+      setSnackbar({ message: '请填写名称', type: 'delete' })
       setSubmitting(false)
       return
     }
 
     if (type === 'HABIT' && (!body.frequency || !body.startDate)) {
-      toast('请填写必填字段')
+      setSnackbar({ message: '请填写必填字段', type: 'delete' })
       setSubmitting(false)
       return
     }
@@ -59,11 +60,11 @@ export default function NewHabitPage() {
     })
 
     if (res.ok) {
-      toast(type === 'TASK' ? '任务创建成功' : '习惯创建成功')
-      router.push('/dashboard')
+      setSnackbar({ message: type === 'TASK' ? '任务创建成功' : '习惯创建成功', type: 'success' })
+      setTimeout(() => router.push('/dashboard'), 800)
     } else {
       const err = await res.json()
-      toast(err.error || '创建失败，请重试')
+      setSnackbar({ message: err.error || '创建失败，请重试', type: 'delete' })
     }
     setSubmitting(false)
   }
@@ -206,6 +207,14 @@ export default function NewHabitPage() {
           </form>
         </CardContent>
       </Card>
+
+      {snackbar && (
+        <GlobalSnackbar
+          message={snackbar.message}
+          type={snackbar.type}
+          onClose={() => setSnackbar(null)}
+        />
+      )}
     </div>
   )
 }

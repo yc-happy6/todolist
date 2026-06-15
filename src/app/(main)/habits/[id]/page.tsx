@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { CelebrationModal } from '@/components/celebration-modal'
-import { toast } from 'sonner'
+import { GlobalSnackbar } from '@/components/global-snackbar'
 import { priorityColor, priorityBarColor, priorityLabel } from '@/lib/priority'
 
 interface HabitDetail {
@@ -61,6 +61,7 @@ export default function HabitDetailPage() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [celebrationAchievement, setCelebrationAchievement] = useState<CelebrationAchievement | null>(null)
   const [checkinAnimating, setCheckinAnimating] = useState(false)
+  const [snackbar, setSnackbar] = useState<{message: string; type: 'success' | 'delete'} | null>(null)
 
   const fetchHabit = useCallback(async () => {
     const res = await fetch(`/api/habits/${params.id}`)
@@ -85,9 +86,9 @@ export default function HabitDetailPage() {
     if (res.ok) {
       const data = await res.json()
       if (data.taskCompleted) {
-        toast('任务已完成')
+        setSnackbar({ message: '任务已完成', type: 'success' })
       } else {
-        toast(`连续打卡 ${data.currentStreak} 天`)
+        setSnackbar({ message: `连续打卡 ${data.currentStreak} 天`, type: 'success' })
       }
       if (data.newAchievements?.length > 0) {
         const latest = data.newAchievements[data.newAchievements.length - 1]
@@ -97,7 +98,7 @@ export default function HabitDetailPage() {
       fetchHabit()
     } else {
       const err = await res.json()
-      toast(err.error || '打卡失败')
+      setSnackbar({ message: err.error || '打卡失败', type: 'delete' })
     }
     setTimeout(() => setCheckinAnimating(false), 800)
   }
@@ -113,7 +114,7 @@ export default function HabitDetailPage() {
       }),
     })
     if (res.ok) {
-      toast('已更新')
+      setSnackbar({ message: '已更新', type: 'success' })
       setEditOpen(false)
       fetchHabit()
     }
@@ -122,7 +123,7 @@ export default function HabitDetailPage() {
   const handleDelete = async () => {
     const res = await fetch(`/api/habits/${params.id}`, { method: 'DELETE' })
     if (res.ok) {
-      toast('已删除')
+      setSnackbar({ message: '已删除', type: 'delete' })
       router.push('/dashboard')
     }
   }
@@ -326,6 +327,14 @@ export default function HabitDetailPage() {
         onOpenChange={setShowCelebration}
         achievement={celebrationAchievement}
       />
+
+      {snackbar && (
+        <GlobalSnackbar
+          message={snackbar.message}
+          type={snackbar.type}
+          onClose={() => setSnackbar(null)}
+        />
+      )}
     </div>
   )
 }

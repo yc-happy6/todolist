@@ -56,7 +56,7 @@ function getFlameLevel(streak: number): number {
 }
 
 export function StreakFlame({ streak }: StreakFlameProps) {
-  if (streak < 2) return null
+  if (streak < 1) return null
 
   const config = getFlameConfig(streak)
   const [pulsing, setPulsing] = useState(false)

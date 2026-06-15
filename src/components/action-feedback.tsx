@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useEffect } from 'react'
 
 interface ActionFeedbackProps {
   x: number
@@ -12,21 +11,12 @@ interface ActionFeedbackProps {
 }
 
 export function ActionFeedback({ x, y, message, type, onClose }: ActionFeedbackProps) {
-  const [mounted, setMounted] = useState(false)
-
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
     const timer = setTimeout(onClose, 800)
     return () => clearTimeout(timer)
-  }, [onClose, mounted])
+  }, [onClose])
 
-  if (!mounted) return null
-
-  return createPortal(
+  return (
     <div
       className="fixed pointer-events-none z-[9999]"
       style={{ left: x, top: y }}
@@ -39,7 +29,6 @@ export function ActionFeedback({ x, y, message, type, onClose }: ActionFeedbackP
       >
         {message}
       </div>
-    </div>,
-    document.body
+    </div>
   )
 }
